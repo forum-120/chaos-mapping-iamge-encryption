@@ -1,0 +1,264 @@
+位异或加解密算法测试代码：
+1.	import cv2
+2.	import numpy as np
+3.	import os
+4.	
+5.	def encrypt_image(seed, image_path):
+6.	    np.random.seed(seed)
+7.	
+8.	    key = np.random.randint(0, 256, size=(500, 500), dtype=np.uint8)
+9.	
+10.	    img_data = cv2.imread(image_path, -1)
+11.	    img_data = cv2.resize(img_data, (500, 500))
+12.	
+13.	    img_data_b = img_data[:, :, 0]
+14.	    img_data_g = img_data[:, :, 1]
+15.	    img_data_r = img_data[:, :, 2]
+16.	
+17.	    cipher_b = cv2.bitwise_xor(img_data_b, key)
+18.	    cipher_g = cv2.bitwise_xor(img_data_g, key)
+19.	    cipher_r = cv2.bitwise_xor(img_data_r, key)
+20.	    cipher_bgr = cv2.merge([cipher_b, cipher_g, cipher_r])
+21.	
+22.	    encrypted_image_path = image_path.split(".")[0] + "_encrypted.png"
+23.	    cv2.imwrite(encrypted_image_path, cipher_bgr)
+24.	
+25.	    return encrypted_image_path
+26.	
+27.	def decrypt_image(seed, image_path):
+28.	    np.random.seed(seed)
+29.	
+30.	    key = np.random.randint(0, 256, size=(500, 500), dtype=np.uint8)
+31.	    cv2.imwrite("Key_1.png", key)
+32.	
+33.	    cipher_bgr = cv2.imread(image_path, -1)
+34.	
+35.	    cipher_b = cipher_bgr[:, :, 0]
+36.	    cipher_g = cipher_bgr[:, :, 1]
+37.	    cipher_r = cipher_bgr[:, :, 2]
+38.	
+39.	    decrypted_b = cv2.bitwise_xor(cipher_b, key)
+40.	    decrypted_g = cv2.bitwise_xor(cipher_g, key)
+41.	    decrypted_r = cv2.bitwise_xor(cipher_r, key)
+42.	    decrypted_bgr = cv2.merge([decrypted_b, decrypted_g, decrypted_r])
+43.	
+44.	    image_name = os.path.splitext(image_path)[0]
+45.	    decrypted_image_name = image_name.rsplit("_", 1)[0] + "_decrypted.png"
+46.	    cv2.imwrite(decrypted_image_name, decrypted_bgr)
+47.	
+48.	    return decrypted_image_name
+49.	
+50.	
+51.	seed = 2020100309
+52.	image_path = "lena.png"
+53.	encrypted_image_path = encrypt_image(seed, image_path)
+54.	print("成功加密图像。加密后的图像保存为:", encrypted_image_path)
+55.	
+56.	
+57.	seed = 2020100309
+58.	image_path = encrypted_image_path
+59.	decrypted_image_path = decrypt_image(seed, image_path)
+60.	print("成功解密图像。解密后的图像保存为:", decrypted_image_path)
+
+封装为供用户使用的图像操作界面的加解密程序：
+1.	import cv2
+2.	import numpy as np
+3.	import time
+4.	import os
+5.	
+6.	# 加密函数
+7.	def encrypt_image(seed, image_path):
+8.	    np.random.seed(seed)
+9.	
+10.	    key = np.random.randint(0, 256, size=(500, 500), dtype=np.uint8)
+11.	
+12.	    img_data = cv2.imread(image_path, -1)
+13.	    img_data = cv2.resize(img_data, (500, 500))
+14.	
+15.	    img_data_b = img_data[:, :, 0]
+16.	    img_data_g = img_data[:, :, 1]
+17.	    img_data_r = img_data[:, :, 2]
+18.	
+19.	    cipher_b = cv2.bitwise_xor(img_data_b, key)
+20.	    cipher_g = cv2.bitwise_xor(img_data_g, key)
+21.	    cipher_r = cv2.bitwise_xor(img_data_r, key)
+22.	    cipher_bgr = cv2.merge([cipher_b, cipher_g, cipher_r])
+23.	
+24.	    encrypted_image_path = image_path.split(".")[0] + "_encrypted.png"
+25.	    cv2.imwrite(encrypted_image_path, cipher_bgr)
+26.	
+27.	    return encrypted_image_path
+28.	2
+29.	# 解密函数
+30.	def decrypt_image(seed, image_path):
+31.	    np.random.seed(seed)
+32.	
+33.	    key = np.random.randint(0, 256, size=(500, 500), dtype=np.uint8)
+34.	    cv2.imwrite("Key_1.png", key)
+35.	
+36.	    cipher_bgr = cv2.imread(image_path, -1)
+37.	
+38.	    cipher_b = cipher_bgr[:, :, 0]
+39.	    cipher_g = cipher_bgr[:, :, 1]
+40.	    cipher_r = cipher_bgr[:, :, 2]
+41.	
+42.	    decrypted_b = cv2.bitwise_xor(cipher_b, key)
+43.	    decrypted_g = cv2.bitwise_xor(cipher_g, key)
+44.	    decrypted_r = cv2.bitwise_xor(cipher_r, key)
+45.	    decrypted_bgr = cv2.merge([decrypted_b, decrypted_g, decrypted_r])
+46.	
+47.	    image_name = os.path.splitext(image_path)[0]
+48.	    decrypted_image_name = image_name.rsplit("_", 1)[0] + "_decrypted.png"
+49.	    cv2.imwrite(decrypted_image_name, decrypted_bgr)
+50.	
+51.	    return decrypted_image_name
+52.	
+53.	# 打印边框
+54.	def print_border(text):
+55.	    border = '*' * (len(text) + 4)
+56.	    print(border)
+57.	    print(f"* {text} *")
+58.	    print(border)
+59.	
+60.	# 欢迎和选择界面
+61.	while True:
+62.	    print_border("欢迎使用xor图像加解密系统！")
+63.	    print("请选择:")
+64.	    print("1. 加密图像")
+65.	    print("2. 解密图像")
+66.	    print("0. 退出系统")
+67.	
+68.	    option = input("请输入你的选项(0, 1, 2): ")
+69.	
+70.	    if option == "1":
+71.	        seed = int(input("输入密钥: "))
+72.	        image_path = input("输入图像的名称: ")
+73.	        encrypted_image_path = encrypt_image(seed, image_path)
+74.	        print("成功加密图像. 被加密后的图像名称为:", encrypted_image_path)
+75.	    elif option == "2":
+76.	        seed = int(input("输入密钥: "))
+77.	        image_path = input("输入被加密的图像的名称: ")
+78.	        decrypted_image_path = decrypt_image(seed, image_path)
+79.	        print("成功解密图像，解密后的图像名称为:", decrypted_image_path)
+80.	    elif option == "0":
+81.	        break
+82.	    else:
+83.	        print("Invalid option. Please select 0, 1, or 2.")
+84.	
+85.	    print()  # 空行分隔每次操作
+86.	
+87.	print_border("Program Exited")
+88.	
+
+混沌系统与按位异或结合的加解密算法：
+1.	import cv2
+2.	import numpy as np
+3.	import time
+4.	
+5.	# Henon映射混沌系统参数
+6.	a = 1.4
+7.	b = 0.3
+8.	
+9.	np.random.seed(2020100309)  # 设置随机数种子
+10.	
+11.	def generate_key(seed, size):
+12.	    np.random.seed(seed)
+13.	    key = np.random.randint(0, 256, size=size, dtype=np.uint8)
+14.	    return key
+15.	
+16.	def henon_map(size):
+17.	    x = np.zeros(size)
+18.	    y = np.zeros(size)
+19.	    for i in range(1, size[0]):
+20.	        x[i] = 1 - a * x[i-1]**2 + y[i-1]
+21.	        y[i] = b * x[i-1]
+22.	    return (x + y) % 256
+23.	
+24.	def encrypt_image(seed, image_path):
+25.	    key = generate_key(seed, (500, 500))
+26.	
+27.	    img_data = cv2.imread(image_path, -1)
+28.	    img_data = cv2.resize(img_data, (500, 500))
+29.	
+30.	    img_data_b = img_data[:, :, 0]
+31.	    img_data_g = img_data[:, :, 1]
+32.	    img_data_r = img_data[:, :, 2]
+33.	
+34.	    henon_table = henon_map((500, 500))
+35.	    henon_table *= 100
+36.	    henon_table = henon_table.astype(int)
+37.	    henon_table = henon_table % 256
+38.	
+39.	    cipher_b = (img_data_b ^ key) + henon_table
+40.	    cipher_g = (img_data_g ^ key) + henon_table
+41.	    cipher_r = (img_data_r ^ key) + henon_table
+42.	
+43.	    cipher_bgr = cv2.merge([cipher_b % 256, cipher_g % 256, cipher_r % 256])
+44.	
+45.	    encrypted_image_path = image_path.split(".")[0] + "_encrypted.png"
+46.	    cv2.imwrite(encrypted_image_path, cipher_bgr)
+47.	
+48.	    return encrypted_image_path
+49.	
+50.	def decrypt_image(seed, image_path):
+51.	    key = generate_key(seed, (500, 500))
+52.	
+53.	    cipher_bgr = cv2.imread(image_path, -1)
+54.	
+55.	    cipher_b = cipher_bgr[:, :, 0]
+56.	    cipher_g = cipher_bgr[:, :, 1]
+57.	    cipher_r = cipher_bgr[:, :, 2]
+58.	
+59.	    henon_table = henon_map((500, 500))
+60.	    henon_table *= 100
+61.	    henon_table = henon_table.astype(int)
+62.	    henon_table = henon_table % 256
+63.	
+64.	    decrypted_b = (cipher_b - henon_table) ^ key
+65.	    decrypted_g = (cipher_g - henon_table) ^ key
+66.	    decrypted_r = (cipher_r - henon_table) ^ key
+67.	
+68.	    decrypted_bgr = cv2.merge([decrypted_b % 256, decrypted_g % 256, decrypted_r % 256])
+69.	
+70.	    decrypted_image_path = image_path.split("_")[0] + "_decrypted.png"
+71.	    cv2.imwrite(decrypted_image_path, decrypted_bgr)
+72.	
+73.	    return decrypted_image_path
+74.	
+75.	
+76.	seed = 2020100309
+77.	image_path = "lena.png"
+78.	encrypted_image_path = encrypt_image(seed, image_path)
+79.	print("成功加密图像。加密后的图像保存为:", encrypted_image_path)
+80.	
+81.	seed = 2020100309
+82.	image_path = encrypted_image_path
+83.	decrypted_image_path = decrypt_image(seed, image_path)
+84.	print("成功解密图像。解密后的图像保存为:", decrypted_image_path)
+画直方图：
+1.	import cv2
+2.	import numpy as np
+3.	import matplotlib.pyplot as plt
+4.	
+5.	def compute_histogram(image):
+6.	    # 将图像转换为灰度图像
+7.	    gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+8.	
+9.	    # 计算直方图
+10.	    histogram = cv2.calcHist([gray_image], [0], None, [256], [0, 256])
+11.	
+12.	    return histogram
+13.	
+14.	# 读取图像
+15.	image_path = "lena.png"
+16.	image = cv2.imread(image_path)
+17.	
+18.	# 计算直方图
+19.	histogram = compute_histogram(image)
+20.	
+21.	# 绘制直方图
+22.	plt.plot(histogram)
+23.	plt.title('Histogram')
+24.	plt.xlabel('Pixel Value')
+25.	plt.ylabel('Frequency')
+26.	plt.show()

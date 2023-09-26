@@ -10,3 +10,5 @@ x(n+1) = y(n) + 1 - a * x(n)^2
 y(n+1) = b * x(n)
 Among them, x(n), y(n) is the current state, x(n+1), y(n+1) is the next state, a and b are mapping parameters, which are generated through multiple rounds of iteration Complex, seemingly random chaos tables.
 The solution is to design a henon_map function based on the original bitwise XOR, iteratively calculate the values ​​of x and y, and add them modulo 256 to generate a chaos table, and then use the original xor to get The encrypted image rgb matrix interacts with the chaos table (direct addition in the demonstration algorithm) to obtain the final encrypted image. The decryption process is the same.
+
+<img width="670" alt="image" src="https://github.com/forum-120/chaos-mapping-iamge-encryption/assets/71775813/886fb616-675f-4e3b-a4f2-687bec8d2cd8">
